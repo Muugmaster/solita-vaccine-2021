@@ -62,7 +62,7 @@ const addToVaccinationsTable = async (fileName) => {
       id: item.vaccination_id,
       gender: item.gender,
       sourceBottle: item.sourceBottle,
-      injected: item.injected,
+      vaccinationDate: item.vaccinationDate,
     })
   })
 }

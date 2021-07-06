@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       id: { type: DataTypes.STRING, primaryKey: true },
       gender: DataTypes.STRING,
       sourceBottle: DataTypes.STRING,
-      injected: DataTypes.DATE,
+      vaccinationDate: DataTypes.DATE,
     },
     {
       sequelize,
