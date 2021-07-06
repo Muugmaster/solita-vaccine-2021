@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 
 const ordersRouter = require('./controllers/orders')
+const vaccinationsRouter = require('./controllers/vaccinations')
 
 const app = express()
 
@@ -17,5 +18,6 @@ app.get('/ping', (req, res) => {
 })
 
 app.use('/api/orders', ordersRouter)
+app.use('/api/vaccinations', vaccinationsRouter)
 
 module.exports = app
