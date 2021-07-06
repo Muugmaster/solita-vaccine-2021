@@ -2,6 +2,7 @@ const vaccinationsRouter = require('express').Router()
 const { vaccinations } = require('../models')
 const db = require('../models')
 const { Op } = require('sequelize')
+const validators = require('../utils/validators')
 
 // Get all vaccination data
 vaccinationsRouter.get('/', async (req, res) => {
@@ -25,10 +26,9 @@ vaccinationsRouter.get('/used', async (req, res) => {
       .json({ success: false, message: 'Include search params' })
   }
 
-  let formattedDate
-  try {
-    formattedDate = new Date(date)
-  } catch (error) {
+  const validDate = validators.validateDate(date)
+
+  if (!validDate) {
     return res
       .status(404)
       .json({ success: false, message: 'Search param need to be valid date' })
@@ -41,7 +41,7 @@ vaccinationsRouter.get('/used', async (req, res) => {
       ],
       where: {
         vaccinationDate: {
-          [Op.lt]: formattedDate,
+          [Op.lt]: date,
         },
       },
     })

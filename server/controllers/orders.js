@@ -1,5 +1,6 @@
 const ordersRouter = require('express').Router()
 const ordersService = require('../services/ordersService')
+const validators = require('../utils/validators')
 
 // Get all orders
 ordersRouter.get('/', async (req, res) => {
@@ -32,10 +33,9 @@ ordersRouter.get('/arrived', async (req, res) => {
       .json({ success: false, message: 'Include search params' })
   }
 
-  let validDate
-  try {
-    validDate = new Date(date)
-  } catch (error) {
+  const validDate = validators.validateDate(date)
+
+  if (!validDate) {
     return res
       .status(404)
       .json({ success: false, message: 'Search param need to be valid date' })
@@ -44,12 +44,12 @@ ordersRouter.get('/arrived', async (req, res) => {
   if (date && producer) {
     const response = await ordersService.sumOfOrdersAndVaccinationsPerProd(
       producer,
-      validDate
+      date
     )
     return res.status(response.status).json(response)
   }
 
-  const response = await ordersService.sumOfOrdersAndVaccinations(validDate)
+  const response = await ordersService.sumOfOrdersAndVaccinations(date)
   return res.status(response.status).json(response)
 })
 
