@@ -7,41 +7,27 @@ const GetAllOrders = async () => {
   return allOrders
 }
 
-const ordersByVaccineName = async (name) => {
+const ordersByProdName = async (name) => {
   if (!name) {
     return { status: 404, success: false, message: 'Include search params' }
   }
 
   try {
-    const ordersByVaccineName = await orders.findAll({
+    const ordersByProdName = await orders.findAll({
       where: {
         vaccine: name,
       },
     })
 
-    if (ordersByVaccineName.length <= 0) {
-      return {
-        status: 404,
-        success: false,
-        message: 'No orders with given params',
-      }
-    }
-    return { status: 200, success: true, orders: ordersByVaccineName }
+    return { status: 200, success: true, orders: ordersByProdName }
   } catch (error) {
     console.log(error)
   }
 }
 
-const sumOfOrdersAndVaccinationsPerProd = async (producer, validDate) => {
+const ordersByProdAndDate = async (producer, validDate) => {
   try {
     const sumOfOrdersAndVaccinationsPerProd = await orders.findAll({
-      attributes: [
-        [
-          db.sequelize.fn('SUM', db.sequelize.col('injections')),
-          'total_injections',
-        ],
-        [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'total_orders'],
-      ],
       where: {
         [Op.and]: [
           {
@@ -66,16 +52,9 @@ const sumOfOrdersAndVaccinationsPerProd = async (producer, validDate) => {
   }
 }
 
-const sumOfOrdersAndVaccinations = async (validDate) => {
+const ordersByDate = async (validDate) => {
   try {
     const sumOfOrdersAndVaccinations = await orders.findAll({
-      attributes: [
-        [
-          db.sequelize.fn('SUM', db.sequelize.col('injections')),
-          'total_injections',
-        ],
-        [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'total_orders'],
-      ],
       where: {
         arrived: {
           [Op.lt]: validDate,
@@ -96,7 +75,7 @@ const sumOfOrdersAndVaccinations = async (validDate) => {
 
 module.exports = {
   GetAllOrders,
-  ordersByVaccineName,
-  sumOfOrdersAndVaccinationsPerProd,
-  sumOfOrdersAndVaccinations,
+  ordersByProdName,
+  ordersByProdAndDate,
+  ordersByDate,
 }

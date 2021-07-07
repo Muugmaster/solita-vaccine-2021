@@ -19,34 +19,30 @@ describe('orders controller', () => {
   })
 
   test('return orders by name of vaccine', async () => {
-    const zerpfy = await api.get('/api/orders/vaccine?name=Zerpfy')
-    const antiqua = await api.get('/api/orders/vaccine?name=Antiqua')
-    const solarBuddhica = await api.get(
-      '/api/orders/vaccine?name=SolarBuddhica'
-    )
+    const zerpfy = await api.get('/api/orders/?producer=Zerpfy')
+    const antiqua = await api.get('/api/orders/?producer=Antiqua')
+    const solarBuddhica = await api.get('/api/orders?producer=SolarBuddhica')
 
     expect(zerpfy.body.orders).toHaveLength(1663)
     expect(antiqua.body.orders).toHaveLength(1661)
     expect(solarBuddhica.body.orders).toHaveLength(1676)
   })
 
-  test('return how many orders and vaccines have arrived total on given day "2021-01-10T11:10:06.473587Z"', async () => {
+  test('return orders arrived before given date "2021-01-10T11:10:06.473587Z"', async () => {
     const response = await api.get(
-      '/api/orders/arrived?date=2021-01-10T11:10:06.473587Z'
+      '/api/orders/?arrived=2021-01-10T11:10:06.473587Z'
     )
 
-    expect(response.body.orders[0].total_injections).toBe('1995')
-    expect(response.body.orders[0].total_orders).toBe('396')
+    expect(response.body.orders).toHaveLength(396)
   })
 
-  test('return how many orders/vaccines per producer and give day "2021-03-28T11:10:06.473587Z"', async () => {
+  test('return orders arrived before given date "2021-03-28T11:10:06.473587Z" and given producer "Zerpfy"', async () => {
     const zerpfy = await api.get(
-      '/api/orders/arrived?date=2021-03-28T11:10:06.473587Z&producer=Zerpfy'
+      '/api/orders/?arrived=2021-03-28T11:10:06.473587Z&producer=Zerpfy'
     )
 
     expect(zerpfy.body.producer).toBe('Zerpfy')
-    expect(zerpfy.body.orders[0].total_injections).toBe('7110')
-    expect(zerpfy.body.orders[0].total_orders).toBe('1422')
+    expect(zerpfy.body.orders).toHaveLength(1422)
   })
 
   afterAll(() => {
