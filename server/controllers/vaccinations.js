@@ -1,8 +1,9 @@
 const vaccinationsRouter = require('express').Router()
-const { vaccinations } = require('../models')
+const { vaccinations, orders } = require('../models')
 const db = require('../models')
 const { Op } = require('sequelize')
 const validators = require('../utils/validators')
+const vaccinationsService = require('../services/vaccinationsService')
 
 // Get all vaccination data
 vaccinationsRouter.get('/', async (req, res) => {
@@ -16,8 +17,8 @@ vaccinationsRouter.get('/', async (req, res) => {
   }
 })
 
-// How many of the vaccinations have been used for given day
-vaccinationsRouter.get('/used', async (req, res) => {
+// How many vaccines expired before the usage -> remember to decrease used injections from the expired bottle
+vaccinationsRouter.get('/expired', async (req, res) => {
   const { date } = req.query
 
   if (!date) {
@@ -34,23 +35,8 @@ vaccinationsRouter.get('/used', async (req, res) => {
       .json({ success: false, message: 'Search param need to be valid date' })
   }
 
-  try {
-    const allUsedVaccinations = await vaccinations.findAll({
-      attributes: [
-        [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'used_vaccinations'],
-      ],
-      where: {
-        vaccinationDate: {
-          [Op.lt]: date,
-        },
-      },
-    })
-    return res
-      .status(200)
-      .json({ success: true, vaccinations: allUsedVaccinations })
-  } catch (error) {
-    console.log(error)
-  }
+  const response = await vaccinationsService.expiredVaccines(date)
+  return res.status(response.status).json(response)
 })
 
 module.exports = vaccinationsRouter

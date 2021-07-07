@@ -52,7 +52,7 @@ const ordersByProdAndDate = async (producer, validDate) => {
   }
 }
 
-const ordersByDate = async (validDate) => {
+const ordersBeforeDate = async (validDate) => {
   try {
     const sumOfOrdersAndVaccinations = await orders.findAll({
       where: {
@@ -73,9 +73,38 @@ const ordersByDate = async (validDate) => {
   }
 }
 
+const ordersByDate = async (validDate) => {
+  console.log(validDate)
+  try {
+    const addOneDay = (date) => {
+      const dt = new Date(date)
+      console.log(dt)
+      return dt.setDate(dt.getDate() + 1)
+    }
+    const sumOfOrdersAndVaccinations = await orders.findAll({
+      where: {
+        [Op.and]: [
+          { arrived: { [Op.gte]: validDate } },
+          { arrived: { [Op.lt]: addOneDay(validDate) } },
+        ],
+      },
+    })
+
+    return {
+      status: 200,
+      success: true,
+      date: validDate,
+      orders: sumOfOrdersAndVaccinations,
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 module.exports = {
   GetAllOrders,
   ordersByProdName,
   ordersByProdAndDate,
+  ordersBeforeDate,
   ordersByDate,
 }

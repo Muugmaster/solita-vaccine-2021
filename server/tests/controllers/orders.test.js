@@ -18,7 +18,7 @@ describe('orders controller', () => {
     expect(response.body.orders).toHaveLength(5000)
   })
 
-  test('return orders by name of vaccine', async () => {
+  test('return orders by name of producer', async () => {
     const zerpfy = await api.get('/api/orders/?producer=Zerpfy')
     const antiqua = await api.get('/api/orders/?producer=Antiqua')
     const solarBuddhica = await api.get('/api/orders?producer=SolarBuddhica')
@@ -30,7 +30,7 @@ describe('orders controller', () => {
 
   test('return orders arrived before given date "2021-01-10T11:10:06.473587Z"', async () => {
     const response = await api.get(
-      '/api/orders/?arrived=2021-01-10T11:10:06.473587Z'
+      '/api/orders/?arrivedBefore=2021-01-10T11:10:06.473587Z'
     )
 
     expect(response.body.orders).toHaveLength(396)
@@ -38,11 +38,19 @@ describe('orders controller', () => {
 
   test('return orders arrived before given date "2021-03-28T11:10:06.473587Z" and given producer "Zerpfy"', async () => {
     const zerpfy = await api.get(
-      '/api/orders/?arrived=2021-03-28T11:10:06.473587Z&producer=Zerpfy'
+      '/api/orders/?arrivedBefore=2021-03-28T11:10:06.473587Z&producer=Zerpfy'
     )
 
     expect(zerpfy.body.producer).toBe('Zerpfy')
     expect(zerpfy.body.orders).toHaveLength(1422)
+  })
+
+  test('return orders arrived on given date "2021-03-20T00:00:00.000Z"', async () => {
+    const response = await api.get(
+      '/api/orders/?arrived=2021-03-20T00:00:00.000Z'
+    )
+
+    expect(response.body.orders).toHaveLength(61)
   })
 
   afterAll(() => {
