@@ -7,4 +7,20 @@ const getArrivedBeforeDate = async (date) => {
   return response.data
 }
 
-export default { getArrivedBeforeDate }
+const getArrivedBeforeDateAndProd = async (date, prod) => {
+  const response = await axios.get(
+    `${API_URL}?arrivedBefore=${date}&producer=${prod}`
+  )
+  return response.data
+}
+
+const getArrivedByDate = async (date) => {
+  const response = await axios.get(`${API_URL}?arrived=${date}`)
+  return response.data
+}
+
+export default {
+  getArrivedBeforeDate,
+  getArrivedBeforeDateAndProd,
+  getArrivedByDate,
+}
