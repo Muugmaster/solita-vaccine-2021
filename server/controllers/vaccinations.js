@@ -7,13 +7,28 @@ const vaccinationsService = require('../services/vaccinationsService')
 
 // Get all vaccination data
 vaccinationsRouter.get('/', async (req, res) => {
-  try {
-    const allVaccinations = await vaccinations.findAll({})
-    return res
-      .status(200)
-      .json({ success: true, vaccinations: allVaccinations })
-  } catch (error) {
-    console.log(error)
+  const { date } = req.query
+
+  if (date) {
+    const validDate = validators.validateDate(date)
+
+    if (!validDate) {
+      return res.status(404).json({
+        success: false,
+        message: 'Search param need to be valid date',
+      })
+    }
+    const response = await vaccinationsService.vaccinationsBeforeDate(date)
+    return res.status(response.status).json(response)
+  } else {
+    try {
+      const allVaccinations = await vaccinations.findAll({})
+      return res
+        .status(200)
+        .json({ success: true, vaccinations: allVaccinations })
+    } catch (error) {
+      console.log(error)
+    }
   }
 })
 

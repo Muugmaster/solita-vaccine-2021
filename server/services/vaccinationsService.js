@@ -2,6 +2,27 @@ const { vaccinations, orders } = require('../models')
 const db = require('../models')
 const { Op } = require('sequelize')
 
+const vaccinationsBeforeDate = async (validDate) => {
+  try {
+    const sumOfVaccinations = await vaccinations.findAll({
+      where: {
+        vaccinationDate: {
+          [Op.lt]: validDate,
+        },
+      },
+    })
+
+    return {
+      status: 200,
+      success: true,
+      date: validDate,
+      vaccinations: sumOfVaccinations,
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const countExpiredVaccinations = (
   arrOfExpiredOrders,
   arrOfExpiredVaccinations
@@ -53,4 +74,8 @@ const expiredVaccines = async (date) => {
   }
 }
 
-module.exports = { countExpiredVaccinations, expiredVaccines }
+module.exports = {
+  vaccinationsBeforeDate,
+  countExpiredVaccinations,
+  expiredVaccines,
+}

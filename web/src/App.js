@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import ordersService from './services/orders'
 import vaccinationService from './services/vaccinations'
+import BarChart from './components/chart/BarChart'
+import CountUp from 'react-countup'
 
 // material ui
 import Grid from '@material-ui/core/Grid'
@@ -17,6 +19,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
 
 function App() {
+  const [data, setData] = useState(null)
   const [orders, setOrders] = useState(null)
   const [vaccines, setVaccines] = useState(null)
   const [ordersByDate, setOrdersByDate] = useState(null)
@@ -105,6 +108,7 @@ function App() {
     setSelectedDate(new Date(date))
     getOrdersByGivenDate(date, producer)
     getExpiredVaccinations(date)
+    vaccinationsLeft(date)
     setProducer('Total')
   }
 
@@ -114,18 +118,41 @@ function App() {
     getOrdersByGivenDate(selectedDate, event.target.value)
   }
 
+  const vaccinationsLeft = async (date) => {
+    const vaccinations = await vaccinationService.getAll(date)
+    console.log(vaccinations.vaccinations.length)
+    console.log('expired vaccines', expiredVaccinations)
+    console.log('all vaccines', vaccines)
+    console.log(vaccines - expiredVaccinations)
+    console.log(
+      'left',
+      vaccines - expiredVaccinations - vaccinations.vaccinations.length
+    )
+    setData({
+      date,
+      allVaccines: vaccines,
+      expired: expiredVaccinations,
+      left: vaccines - expiredVaccinations - vaccinations.vaccinations.length,
+    })
+  }
+
   useEffect(() => {
     getAllOrdersAndVaccines(new Date())
     getExpiredVaccinations(new Date())
+    vaccinationsLeft(new Date())
   }, [])
 
   return (
     <div>
       <Grid container justifyContent="center" spacing={2}>
-        <Typography variant="h1" component="h2" gutterBottom>
-          Vaccine App
-        </Typography>
-        <Grid item md={10} xs={12}>
+        <Grid xs={12} md={10} xl={8}>
+          <Box textAlign="center">
+            <Typography variant="h1" component="h2" gutterBottom>
+              Vaccine App
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid item md={10} xs={12} xl={8}>
           <Box textAlign="center">
             <Card>
               <CardContent>
@@ -148,7 +175,7 @@ function App() {
         </Grid>
       </Grid>
       <Grid container justifyContent="center" spacing={2}>
-        <Grid item md={12}>
+        <Grid item md={12} xl={8}>
           <Grid container justifyContent="center" spacing={3}>
             <Grid item md={5}>
               <Card>
@@ -179,13 +206,13 @@ function App() {
                         <ListItem>
                           <ListItemText
                             primary={`${producer} vaccines`}
-                            secondary={vaccines}
+                            secondary={<CountUp start={0} end={vaccines} />}
                           />
                         </ListItem>
                         <ListItem>
                           <ListItemText
                             primary={`${producer} orders`}
-                            secondary={orders}
+                            secondary={<CountUp start={0} end={orders} />}
                           />
                         </ListItem>
                       </List>
@@ -199,9 +226,11 @@ function App() {
                           <ListItemText
                             primary={`${producer} vaccines`}
                             secondary={
-                              vaccinesByDate
-                                ? vaccinesByDate
-                                : 'No arrived orders on this day'
+                              vaccinesByDate ? (
+                                <CountUp start={0} end={vaccinesByDate} />
+                              ) : (
+                                'No arrived orders on this day'
+                              )
                             }
                           />
                         </ListItem>
@@ -209,9 +238,11 @@ function App() {
                           <ListItemText
                             primary={`${producer} orders`}
                             secondary={
-                              ordersByDate
-                                ? ordersByDate
-                                : 'No arrived orders on this day'
+                              ordersByDate ? (
+                                <CountUp start={0} end={ordersByDate} />
+                              ) : (
+                                'No arrived orders on this day'
+                              )
                             }
                           />
                         </ListItem>
@@ -234,13 +265,17 @@ function App() {
                           <ListItem>
                             <ListItemText
                               primary="Expired vaccines"
-                              secondary={expiredVaccinations}
+                              secondary={
+                                <CountUp start={0} end={expiredVaccinations} />
+                              }
                             />
                           </ListItem>
                           <ListItem>
                             <ListItemText
                               primary="Expired orders"
-                              secondary={expiredOrders}
+                              secondary={
+                                <CountUp start={0} end={expiredOrders} />
+                              }
                             />
                           </ListItem>
                         </List>
@@ -250,13 +285,17 @@ function App() {
                           <ListItem>
                             <ListItemText
                               primary="Vaccines expiring in 10 days"
-                              secondary={vaccineGoingToExpire}
+                              secondary={
+                                <CountUp start={0} end={vaccineGoingToExpire} />
+                              }
                             />
                           </ListItem>
                           <ListItem>
                             <ListItemText
                               primary="Orders expiring in 10 days"
-                              secondary={ordersGoingToExpire}
+                              secondary={
+                                <CountUp start={0} end={ordersGoingToExpire} />
+                              }
                             />
                           </ListItem>
                         </List>
@@ -267,6 +306,9 @@ function App() {
               </Box>
             </Grid>
           </Grid>
+        </Grid>
+        <Grid container justifyContent="center" spacing={2}>
+          <BarChart d={data} />
         </Grid>
       </Grid>
     </div>
