@@ -19,17 +19,17 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
 
 function App() {
-  const [data, setData] = useState(null)
-  const [orders, setOrders] = useState(null)
-  const [vaccines, setVaccines] = useState(null)
-  const [ordersByDate, setOrdersByDate] = useState(null)
-  const [vaccinesByDate, setVaccinesByDate] = useState(null)
-  const [expiredVaccinations, setExpiredVaccinations] = useState(null)
-  const [expiredOrders, setExpiredOrders] = useState(null)
-  const [vaccineGoingToExpire, setVaccineGoingToExpire] = useState(null)
-  const [ordersGoingToExpire, setOrdersGoingToExpire] = useState(null)
+  const [orders, setOrders] = useState(0)
+  const [vaccines, setVaccines] = useState(0)
+  const [ordersByDate, setOrdersByDate] = useState(0)
+  const [vaccinesByDate, setVaccinesByDate] = useState(0)
+  const [expiredVaccinations, setExpiredVaccinations] = useState(0)
+  const [expiredOrders, setExpiredOrders] = useState(0)
+  const [vaccineGoingToExpire, setVaccineGoingToExpire] = useState(0)
+  const [ordersGoingToExpire, setOrdersGoingToExpire] = useState(0)
   const [producer, setProducer] = useState('Total')
   const [selectedDate, setSelectedDate] = useState(new Date())
+  const [vaccLeft, setVaccleft] = useState(null)
 
   const PRODS = ['Antiqua', 'SolarBuddhica', 'Zerpfy', 'Total']
 
@@ -42,6 +42,7 @@ function App() {
     })
     setVaccines(sumOfVaccines)
     setOrders(orders.length)
+    vaccinationsLeft(date)
   }
 
   const getAllOrdersAndVaccinesByProd = async (date, prod) => {
@@ -103,9 +104,14 @@ function App() {
     return await vaccinationService.getExpiredByDate(isoDate)
   }
 
+  const vaccinationsLeft = async (date) => {
+    const vaccinations = await vaccinationService.getAll(date)
+    setVaccleft(vaccinations.vaccinations.length)
+  }
+
   const handleChange = (date) => {
-    getAllOrdersAndVaccines(date)
     setSelectedDate(new Date(date))
+    getAllOrdersAndVaccines(date)
     getOrdersByGivenDate(date, producer)
     getExpiredVaccinations(date)
     vaccinationsLeft(date)
@@ -113,39 +119,23 @@ function App() {
   }
 
   const handleSelectChange = (event) => {
-    setProducer(event.target.value)
-    getAllOrdersAndVaccinesByProd(selectedDate, event.target.value)
-    getOrdersByGivenDate(selectedDate, event.target.value)
-  }
-
-  const vaccinationsLeft = async (date) => {
-    const vaccinations = await vaccinationService.getAll(date)
-    console.log(vaccinations.vaccinations.length)
-    console.log('expired vaccines', expiredVaccinations)
-    console.log('all vaccines', vaccines)
-    console.log(vaccines - expiredVaccinations)
-    console.log(
-      'left',
-      vaccines - expiredVaccinations - vaccinations.vaccinations.length
-    )
-    setData({
-      date,
-      allVaccines: vaccines,
-      expired: expiredVaccinations,
-      left: vaccines - expiredVaccinations - vaccinations.vaccinations.length,
-    })
+    const value = event.target.value
+    setProducer(value)
+    getAllOrdersAndVaccinesByProd(selectedDate, value)
+    getOrdersByGivenDate(selectedDate, value)
   }
 
   useEffect(() => {
-    getAllOrdersAndVaccines(new Date())
-    getExpiredVaccinations(new Date())
-    vaccinationsLeft(new Date())
+    setSelectedDate(new Date())
+    getAllOrdersAndVaccines(selectedDate)
+    getExpiredVaccinations(selectedDate)
+    vaccinationsLeft(selectedDate)
   }, [])
 
   return (
     <div>
       <Grid container justifyContent="center" spacing={2}>
-        <Grid xs={12} md={10} xl={8}>
+        <Grid item xs={12} md={10} xl={8}>
           <Box textAlign="center">
             <Typography variant="h1" component="h2" gutterBottom>
               Vaccine App
@@ -307,8 +297,13 @@ function App() {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container justifyContent="center" spacing={2}>
-          <BarChart d={data} />
+          <BarChart
+            all={vaccines}
+            expired={expiredVaccinations}
+            left={vaccines - expiredVaccinations - vaccLeft}
+          />
         </Grid>
       </Grid>
     </div>
