@@ -47,7 +47,7 @@ describe('orders controller', () => {
 
   test('return orders arrived on given date "2021-03-20T00:00:00.000Z"', async () => {
     const response = await api.get(
-      '/api/orders/?arrived=2021-03-20T00:00:00.000Z'
+      '/api/orders/?arrived=2021-03-20T09:47:00.000Z'
     )
 
     expect(response.body.orders).toHaveLength(61)

@@ -26,6 +26,15 @@ describe('vaccinations controller', () => {
     expect(response.body.expired_amount).toBe(13620)
   })
 
+  // How many bottles have expired on the given day (remember a bottle expires 30 days after arrival)
+  test('How many bottles have expired on the given day ("2021-04-07T12:01:00.000Z") (remember a bottle expires 30 days after arrival)', async () => {
+    const response = await api.get(
+      '/api/vaccinations/expired?date=2021-04-07T12:01:00.000Z'
+    )
+
+    expect(response.body.orders).toHaveLength(3239)
+  })
+
   afterAll(() => {
     db.sequelize.close()
   })
