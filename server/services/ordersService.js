@@ -75,6 +75,8 @@ const ordersBeforeDate = async (validDate) => {
 
 const ordersByDate = async (validDate) => {
   console.log(validDate)
+  const setHours = new Date(validDate).setUTCHours(0, 0, 0, 0)
+  const isoDate = new Date(setHours).toISOString()
   try {
     const addOneDay = (date) => {
       const dt = new Date(date)
@@ -84,8 +86,8 @@ const ordersByDate = async (validDate) => {
     const sumOfOrdersAndVaccinations = await orders.findAll({
       where: {
         [Op.and]: [
-          { arrived: { [Op.gte]: validDate } },
-          { arrived: { [Op.lt]: addOneDay(validDate) } },
+          { arrived: { [Op.gte]: isoDate } },
+          { arrived: { [Op.lt]: addOneDay(isoDate) } },
         ],
       },
     })
