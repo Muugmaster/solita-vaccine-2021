@@ -127,71 +127,73 @@ function App() {
   }, [])
 
   return (
-    <div>
-      <Grid container justifyContent="center" spacing={2}>
-        <Grid item xs={12} md={10} xl={8}>
-          <Box textAlign="center">
-            <Typography variant="h1" component="h2" gutterBottom>
-              Vaccine App
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid item md={10} xs={12} xl={8}>
-          <Box textAlign="center">
-            <Typography variant="h5" component="h5" gutterBottom>
-              Select date and start exploring data about orders, vaccines and
-              vaccinations.
-            </Typography>
-            <Box my={5}>
-              <KeyboardDateTimePicker
-                autoOk
-                ampm={false}
-                showTodayButton
-                disableToolbar
-                disableFuture
-                format="dd/MM/yyyy HH:mm"
-                value={selectedDate}
-                onChange={handleChange}
-              />
+    <Grid container justifyContent="center">
+      <Grid item xs={11}>
+        <Grid container justifyContent="center" spacing={2}>
+          <Grid item xs={12} md={10} xl={8}>
+            <Box textAlign="center">
+              <Typography variant="h1" component="h2" gutterBottom>
+                Vaccine App
+              </Typography>
             </Box>
-          </Box>
-        </Grid>
-      </Grid>
-      <Grid container justifyContent="center" spacing={2}>
-        <Grid item md={12} xl={8}>
-          <Grid container justifyContent="center" spacing={3}>
-            <Grid item md={5}>
-              <ArrivedCard
-                producer={producer}
-                handleSelectChange={handleSelectChange}
-                vaccines={vaccines}
-                orders={orders}
-                vaccinesByDate={vaccinesByDate}
-                ordersByDate={ordersByDate}
-              />
-            </Grid>
-            <Grid item md={5}>
-              <Box textAlign="center">
-                <ExpiredCard
-                  expiredVaccinations={expiredVaccinations}
-                  expiredOrders={expiredOrders}
-                  vaccineGoingToExpire={vaccineGoingToExpire}
-                  ordersGoingToExpire={ordersGoingToExpire}
+          </Grid>
+          <Grid item md={10} xs={12} xl={8}>
+            <Box textAlign="center">
+              <Typography variant="h5" component="h5" gutterBottom>
+                Select date and start exploring data about orders, vaccines and
+                vaccinations.
+              </Typography>
+              <Box my={5}>
+                <KeyboardDateTimePicker
+                  autoOk
+                  ampm={false}
+                  showTodayButton
+                  disableToolbar
+                  disableFuture
+                  format="dd/MM/yyyy HH:mm"
+                  value={selectedDate}
+                  onChange={handleChange}
                 />
               </Box>
-            </Grid>
+            </Box>
           </Grid>
         </Grid>
-
         <Grid container justifyContent="center" spacing={2}>
-          <BarChart
-            all={totalVacc}
-            expired={expiredVaccinations}
-            left={totalVacc - expiredVaccinations - vaccLeft}
-          />
+          <Grid item md={12} xl={8}>
+            <Grid container justifyContent="center" spacing={3}>
+              <Grid item md={5}>
+                <ArrivedCard
+                  producer={producer}
+                  handleSelectChange={handleSelectChange}
+                  vaccines={vaccines}
+                  orders={orders}
+                  vaccinesByDate={vaccinesByDate}
+                  ordersByDate={ordersByDate}
+                />
+              </Grid>
+              <Grid item md={5}>
+                <Box textAlign="center">
+                  <ExpiredCard
+                    expiredVaccinations={expiredVaccinations}
+                    expiredOrders={expiredOrders}
+                    vaccineGoingToExpire={vaccineGoingToExpire}
+                    ordersGoingToExpire={ordersGoingToExpire}
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid container justifyContent="center" spacing={2}>
+            <BarChart
+              all={totalVacc}
+              expired={expiredVaccinations}
+              left={totalVacc - expiredVaccinations - vaccLeft}
+            />
+          </Grid>
         </Grid>
       </Grid>
-    </div>
+    </Grid>
   )
 }
 
