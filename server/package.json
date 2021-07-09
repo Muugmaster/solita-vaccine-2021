@@ -10,7 +10,8 @@
     "seed:test": "cross-env NODE_ENV=test node seedDb.js",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "db:create:dev": "cross-env NODE_ENV=development npx sequelize-cli db:create",
-    "db:create:test": "cross-env NODE_ENV=test npx sequelize-cli db:create"
+    "db:create:test": "cross-env NODE_ENV=test npx sequelize-cli db:create",
+    "db:create:all": "npm run db:create:dev && npm run db:create:test"
   },
   "keywords": [],
   "author": "",

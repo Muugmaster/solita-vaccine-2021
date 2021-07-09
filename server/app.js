@@ -13,8 +13,11 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan('tiny'))
 
-app.get('/ping', (req, res) => {
-  res.send('pong')
+app.get('/', (req, res) => {
+  res.status(200).json({
+    orders: 'GET /api/orders',
+    vaccinations: 'GET /api/vaccinations',
+  })
 })
 
 app.use('/api/orders', ordersRouter)
