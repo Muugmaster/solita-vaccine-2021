@@ -2,25 +2,20 @@ import React, { useState, useEffect } from 'react'
 import ordersService from './services/orders'
 import vaccinationService from './services/vaccinations'
 import BarChart from './components/chart/BarChart'
-import CountUp from 'react-countup'
 
 // material ui
 import Grid from '@material-ui/core/Grid'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
 
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
+import ArrivedCard from './components/ArrivedCard'
+import ExpiredCard from './components/ExpiredCard'
 
 function App() {
   const [orders, setOrders] = useState(0)
   const [vaccines, setVaccines] = useState(0)
+  const [totalVacc, setTotalVacc] = useState(0)
   const [ordersByDate, setOrdersByDate] = useState(0)
   const [vaccinesByDate, setVaccinesByDate] = useState(0)
   const [expiredVaccinations, setExpiredVaccinations] = useState(0)
@@ -31,8 +26,6 @@ function App() {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [vaccLeft, setVaccleft] = useState(null)
 
-  const PRODS = ['Antiqua', 'SolarBuddhica', 'Zerpfy', 'Total']
-
   const getAllOrdersAndVaccines = async (date) => {
     const { orders } = await ordersService.getArrivedBeforeDate(date)
 
@@ -41,6 +34,7 @@ function App() {
       return (sumOfVaccines += item.injections)
     })
     setVaccines(sumOfVaccines)
+    setTotalVacc(sumOfVaccines)
     setOrders(orders.length)
     vaccinationsLeft(date)
   }
@@ -144,23 +138,22 @@ function App() {
         </Grid>
         <Grid item md={10} xs={12} xl={8}>
           <Box textAlign="center">
-            <Card>
-              <CardContent>
-                <Typography variant="h4" component="h4" gutterBottom>
-                  Vaccines: {vaccines} | Orders: {orders}
-                </Typography>
-                <KeyboardDateTimePicker
-                  autoOk
-                  ampm={false}
-                  showTodayButton
-                  disableToolbar
-                  disableFuture
-                  format="dd/MM/yyyy HH:mm"
-                  value={selectedDate}
-                  onChange={handleChange}
-                />
-              </CardContent>
-            </Card>
+            <Typography variant="h5" component="h5" gutterBottom>
+              Select date and start exploring data about orders, vaccines and
+              vaccinations.
+            </Typography>
+            <Box my={5}>
+              <KeyboardDateTimePicker
+                autoOk
+                ampm={false}
+                showTodayButton
+                disableToolbar
+                disableFuture
+                format="dd/MM/yyyy HH:mm"
+                value={selectedDate}
+                onChange={handleChange}
+              />
+            </Box>
           </Box>
         </Grid>
       </Grid>
@@ -168,131 +161,23 @@ function App() {
         <Grid item md={12} xl={8}>
           <Grid container justifyContent="center" spacing={3}>
             <Grid item md={5}>
-              <Card>
-                <CardContent>
-                  <Box textAlign="center" mb={2}>
-                    <Typography variant="h5" component="h5" gutterBottom>
-                      Orders and vaccines arrived
-                    </Typography>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={producer}
-                      onChange={handleSelectChange}
-                    >
-                      {PRODS.map((item) => (
-                        <MenuItem key={item} value={item}>
-                          {item}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </Box>
-                  <Grid container justifyContent="center" spacing={0}>
-                    <Grid item md={5}>
-                      <Typography variant="h6" component="h6" gutterBottom>
-                        Before date:
-                      </Typography>
-                      <List>
-                        <ListItem>
-                          <ListItemText
-                            primary={`${producer} vaccines`}
-                            secondary={<CountUp start={0} end={vaccines} />}
-                          />
-                        </ListItem>
-                        <ListItem>
-                          <ListItemText
-                            primary={`${producer} orders`}
-                            secondary={<CountUp start={0} end={orders} />}
-                          />
-                        </ListItem>
-                      </List>
-                    </Grid>
-                    <Grid item md={5}>
-                      <Typography variant="h6" component="h6" gutterBottom>
-                        Selected date:
-                      </Typography>
-                      <List>
-                        <ListItem>
-                          <ListItemText
-                            primary={`${producer} vaccines`}
-                            secondary={
-                              vaccinesByDate ? (
-                                <CountUp start={0} end={vaccinesByDate} />
-                              ) : (
-                                'No arrived orders on this day'
-                              )
-                            }
-                          />
-                        </ListItem>
-                        <ListItem>
-                          <ListItemText
-                            primary={`${producer} orders`}
-                            secondary={
-                              ordersByDate ? (
-                                <CountUp start={0} end={ordersByDate} />
-                              ) : (
-                                'No arrived orders on this day'
-                              )
-                            }
-                          />
-                        </ListItem>
-                      </List>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
+              <ArrivedCard
+                producer={producer}
+                handleSelectChange={handleSelectChange}
+                vaccines={vaccines}
+                orders={orders}
+                vaccinesByDate={vaccinesByDate}
+                ordersByDate={ordersByDate}
+              />
             </Grid>
             <Grid item md={5}>
               <Box textAlign="center">
-                <Card>
-                  <CardContent>
-                    <Typography variant="h5" component="h5" gutterBottom>
-                      Total orders and vaccines expired
-                    </Typography>
-                    <Grid container justifyContent="center" spacing={0}>
-                      <Grid item md={4}>
-                        <List>
-                          <ListItem>
-                            <ListItemText
-                              primary="Expired vaccines"
-                              secondary={
-                                <CountUp start={0} end={expiredVaccinations} />
-                              }
-                            />
-                          </ListItem>
-                          <ListItem>
-                            <ListItemText
-                              primary="Expired orders"
-                              secondary={
-                                <CountUp start={0} end={expiredOrders} />
-                              }
-                            />
-                          </ListItem>
-                        </List>
-                      </Grid>
-                      <Grid item md={6}>
-                        <List>
-                          <ListItem>
-                            <ListItemText
-                              primary="Vaccines expiring in 10 days"
-                              secondary={
-                                <CountUp start={0} end={vaccineGoingToExpire} />
-                              }
-                            />
-                          </ListItem>
-                          <ListItem>
-                            <ListItemText
-                              primary="Orders expiring in 10 days"
-                              secondary={
-                                <CountUp start={0} end={ordersGoingToExpire} />
-                              }
-                            />
-                          </ListItem>
-                        </List>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
+                <ExpiredCard
+                  expiredVaccinations={expiredVaccinations}
+                  expiredOrders={expiredOrders}
+                  vaccineGoingToExpire={vaccineGoingToExpire}
+                  ordersGoingToExpire={ordersGoingToExpire}
+                />
               </Box>
             </Grid>
           </Grid>
@@ -300,9 +185,9 @@ function App() {
 
         <Grid container justifyContent="center" spacing={2}>
           <BarChart
-            all={vaccines}
+            all={totalVacc}
             expired={expiredVaccinations}
-            left={vaccines - expiredVaccinations - vaccLeft}
+            left={totalVacc - expiredVaccinations - vaccLeft}
           />
         </Grid>
       </Grid>

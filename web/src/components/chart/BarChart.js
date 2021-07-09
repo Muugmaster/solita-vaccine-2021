@@ -3,12 +3,12 @@ import { Bar } from 'react-chartjs-2'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 
-const BarChart = ({ all, expired, left }) => {
+const BarChart = ({ all, expired, left, producer }) => {
   const data = {
     labels: ['Vaccines left', 'Vaccines expired', 'Total vaccines'],
     datasets: [
       {
-        label: '# of Vaccines',
+        label: `Total dataset`,
         data: [left, expired, all],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
@@ -39,7 +39,7 @@ const BarChart = ({ all, expired, left }) => {
   return (
     <Grid item md={8} xs={12} xl={6}>
       <Box textAlign="center">
-        <h1 className="title">Vaccinations</h1>
+        <h1 className="title">Total Vaccinations</h1>
       </Box>
       <Bar data={data} options={options} />
     </Grid>
