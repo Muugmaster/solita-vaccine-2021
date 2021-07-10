@@ -7,6 +7,7 @@ import BarChart from './components/chart/BarChart'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { KeyboardDateTimePicker } from '@material-ui/pickers'
 import ArrivedCard from './components/ArrivedCard'
@@ -59,7 +60,6 @@ function App() {
   }
 
   const getOrdersByGivenDate = async (date, prod) => {
-    console.log(prod)
     let { orders } = await ordersService.getArrivedByDate(date)
 
     if (prod !== 'Total') {
@@ -158,6 +158,7 @@ function App() {
             </Box>
           </Grid>
         </Grid>
+          {totalVacc !== 0 ? (
         <Grid container justifyContent="center" spacing={2}>
           <Grid item md={12} xl={8}>
             <Grid container justifyContent="center" spacing={3}>
@@ -183,7 +184,6 @@ function App() {
               </Grid>
             </Grid>
           </Grid>
-
           <Grid container justifyContent="center" spacing={2}>
             <BarChart
               all={totalVacc}
@@ -192,6 +192,11 @@ function App() {
             />
           </Grid>
         </Grid>
+          ): (
+            <Grid container justifyContent="center">
+              <CircularProgress />
+            </Grid>
+          )}
       </Grid>
     </Grid>
   )

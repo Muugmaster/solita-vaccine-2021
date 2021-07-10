@@ -31,8 +31,6 @@ const ArrivedCard = ({
           </Typography>
           <Select
             variant="outlined"
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
             value={producer}
             onChange={handleSelectChange}
           >
