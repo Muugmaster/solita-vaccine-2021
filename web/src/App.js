@@ -14,15 +14,15 @@ import ArrivedCard from './components/ArrivedCard'
 import ExpiredCard from './components/ExpiredCard'
 
 function App() {
-  const [orders, setOrders] = useState(0)
-  const [vaccines, setVaccines] = useState(0)
-  const [totalVacc, setTotalVacc] = useState(0)
-  const [ordersByDate, setOrdersByDate] = useState(0)
-  const [vaccinesByDate, setVaccinesByDate] = useState(0)
-  const [expiredVaccinations, setExpiredVaccinations] = useState(0)
-  const [expiredOrders, setExpiredOrders] = useState(0)
-  const [vaccineGoingToExpire, setVaccineGoingToExpire] = useState(0)
-  const [ordersGoingToExpire, setOrdersGoingToExpire] = useState(0)
+  const [orders, setOrders] = useState(null)
+  const [vaccines, setVaccines] = useState(null)
+  const [totalVacc, setTotalVacc] = useState(null)
+  const [ordersByDate, setOrdersByDate] = useState(null)
+  const [vaccinesByDate, setVaccinesByDate] = useState(null)
+  const [expiredVaccinations, setExpiredVaccinations] = useState(null)
+  const [expiredOrders, setExpiredOrders] = useState(null)
+  const [vaccineGoingToExpire, setVaccineGoingToExpire] = useState(null)
+  const [ordersGoingToExpire, setOrdersGoingToExpire] = useState(null)
   const [producer, setProducer] = useState('Total')
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [vaccLeft, setVaccleft] = useState(null)
@@ -158,45 +158,45 @@ function App() {
             </Box>
           </Grid>
         </Grid>
-          {totalVacc !== 0 ? (
-        <Grid container justifyContent="center" spacing={2}>
-          <Grid item md={12} xl={8}>
-            <Grid container justifyContent="center" spacing={3}>
-              <Grid item md={5}>
-                <ArrivedCard
-                  producer={producer}
-                  handleSelectChange={handleSelectChange}
-                  vaccines={vaccines}
-                  orders={orders}
-                  vaccinesByDate={vaccinesByDate}
-                  ordersByDate={ordersByDate}
-                />
-              </Grid>
-              <Grid item md={5}>
-                <Box textAlign="center">
-                  <ExpiredCard
-                    expiredVaccinations={expiredVaccinations}
-                    expiredOrders={expiredOrders}
-                    vaccineGoingToExpire={vaccineGoingToExpire}
-                    ordersGoingToExpire={ordersGoingToExpire}
-                  />
-                </Box>
-              </Grid>
-            </Grid>
-          </Grid>
+        {totalVacc && orders && vaccines ? (
           <Grid container justifyContent="center" spacing={2}>
-            <BarChart
-              all={totalVacc}
-              expired={expiredVaccinations}
-              left={totalVacc - expiredVaccinations - vaccLeft}
-            />
-          </Grid>
-        </Grid>
-          ): (
-            <Grid container justifyContent="center">
-              <CircularProgress />
+            <Grid item md={12} xl={8}>
+              <Grid container justifyContent="center" spacing={3}>
+                <Grid item md={5}>
+                  <ArrivedCard
+                    producer={producer}
+                    handleSelectChange={handleSelectChange}
+                    vaccines={vaccines}
+                    orders={orders}
+                    vaccinesByDate={vaccinesByDate}
+                    ordersByDate={ordersByDate}
+                  />
+                </Grid>
+                <Grid item md={5}>
+                  <Box textAlign="center">
+                    <ExpiredCard
+                      expiredVaccinations={expiredVaccinations}
+                      expiredOrders={expiredOrders}
+                      vaccineGoingToExpire={vaccineGoingToExpire}
+                      ordersGoingToExpire={ordersGoingToExpire}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
             </Grid>
-          )}
+            <Grid container justifyContent="center" spacing={2}>
+              <BarChart
+                all={totalVacc}
+                expired={expiredVaccinations}
+                left={totalVacc - expiredVaccinations - vaccLeft}
+              />
+            </Grid>
+          </Grid>
+        ) : (
+          <Grid container justifyContent="center">
+            <CircularProgress />
+          </Grid>
+        )}
       </Grid>
     </Grid>
   )

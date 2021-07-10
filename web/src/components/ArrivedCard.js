@@ -50,13 +50,15 @@ const ArrivedCard = ({
               <ListItem>
                 <ListItemText
                   primary={`${producer} vaccines`}
-                  secondary={<CountUp start={0} end={vaccines} />}
+                  secondary={
+                    vaccines ? <CountUp start={0} end={vaccines} /> : 0
+                  }
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
                   primary={`${producer} orders`}
-                  secondary={<CountUp start={0} end={orders} />}
+                  secondary={orders ? <CountUp start={0} end={orders} /> : 0}
                 />
               </ListItem>
             </List>

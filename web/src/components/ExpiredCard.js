@@ -28,13 +28,25 @@ const ExpiredCard = ({
               <ListItem>
                 <ListItemText
                   primary="Expired vaccines"
-                  secondary={<CountUp start={0} end={expiredVaccinations} />}
+                  secondary={
+                    expiredVaccinations ? (
+                      <CountUp start={0} end={expiredVaccinations} />
+                    ) : (
+                      0
+                    )
+                  }
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
                   primary="Expired orders"
-                  secondary={<CountUp start={0} end={expiredOrders} />}
+                  secondary={
+                    expiredOrders ? (
+                      <CountUp start={0} end={expiredOrders} />
+                    ) : (
+                      0
+                    )
+                  }
                 />
               </ListItem>
             </List>
@@ -44,13 +56,25 @@ const ExpiredCard = ({
               <ListItem>
                 <ListItemText
                   primary="Vaccines expiring in 10 days"
-                  secondary={<CountUp start={0} end={vaccineGoingToExpire} />}
+                  secondary={
+                    vaccineGoingToExpire ? (
+                      <CountUp start={0} end={vaccineGoingToExpire} />
+                    ) : (
+                      0
+                    )
+                  }
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
                   primary="Orders expiring in 10 days"
-                  secondary={<CountUp start={0} end={ordersGoingToExpire} />}
+                  secondary={
+                    ordersGoingToExpire ? (
+                      <CountUp start={0} end={ordersGoingToExpire} />
+                    ) : (
+                      0
+                    )
+                  }
                 />
               </ListItem>
             </List>
